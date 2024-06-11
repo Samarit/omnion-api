@@ -29,7 +29,8 @@
     "openai": "^4.49.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "socket.io-stream": "^0.9.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

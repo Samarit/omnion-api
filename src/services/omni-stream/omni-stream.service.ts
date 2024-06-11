@@ -13,18 +13,33 @@ export default class OmniStreamService {
     });
   }
 
+  private async createCompletion(
+    message: OpenAI.Chat.Completions.ChatCompletionMessageParam,
+    stream?: boolean,
+  ) {
+    return await this.connection.chat.completions.create({
+      model: this.model,
+      messages: [message],
+      stream: stream ? true : false,
+    });
+  }
+
   async sendMessage(
     message: OpenAI.Chat.Completions.ChatCompletionMessageParam,
-  ): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | void> {
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion | void> {
     try {
-      const stream = await this.connection.chat.completions.create({
-        model: this.model,
-        messages: [message],
-        stream: true,
-      });
-      return stream;
+      const response = await this.createCompletion(message);
+      return response;
     } catch (error) {
       console.log({ error });
     }
+  }
+
+  async sendMessageStream(
+    message: OpenAI.Chat.Completions.ChatCompletionMessageParam,
+  ): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
+    try {
+      const stream = await this.createCompletion(message, true);
+    } catch (error) {}
   }
 }

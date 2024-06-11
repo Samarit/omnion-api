@@ -7,7 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class SocketGateway
@@ -19,19 +19,20 @@ export class SocketGateway
     console.log('SOCKET GATEWAY INIT');
   }
 
-  handleConnection(client: any, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
     console.log(`Connected socket: ${client}`);
     console.log(`Total connections: ${this.io.sockets.sockets.size}`);
   }
 
   handleDisconnect(client: any) {
     console.log(`Disconnected: ${client}`);
+    console.log(`Total connections: ${this.io.sockets.sockets.size}`);
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    console.log('MESSAGE');
-    client.emit('message', 'loh');
-    return 'Hello loh!';
+  handleMessage(client: Socket, payload: any) {
+    console.log(`SOCKET MESSAGE: ${payload}`);
+
+    return;
   }
 }

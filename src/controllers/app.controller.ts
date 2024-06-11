@@ -4,6 +4,7 @@ import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { AppService } from 'src/services/app.service';
 import OmniStreamService from 'src/services/omni-stream/omni-stream.service';
 import { Response } from 'express';
+import { Stream } from 'openai/streaming';
 
 @Controller()
 export class AppController {
@@ -18,27 +19,30 @@ export class AppController {
   }
 
   @Get('/message')
-  async sendMessage(
-    @Body() message: OpenAI.Chat.Completions.ChatCompletionMessageParam,
-    @Res() response: Response,
-  ) {
-    const stream = await this.omniService.sendMessage({
-      role: 'user',
-      content: 'Describe why Grisha is bad person',
-    });
+  async sendMessage(@Body() message: string, @Res() response: Response) {
+    const data = await this.omniService.sendMessage(
+      {
+        role: 'user',
+        content: 'Say Hello Alesha',
+      },
+      { stream: true },
+    );
 
-    if (!stream) throw new Error('LOH NO STREAM');
+    if (!data) throw new Error('LOH NO RESPONSE');
 
-    response.writeHead(200, {
-      'Content-Type': 'text/plain',
-      'Transfer-Encoding': 'chunked',
-    });
+    if (data instanceof Stream) {
+      response.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Transfer-Encoding': 'chunked',
+      });
 
-    for await (let chunk of stream) {
-      console.log(chunk.choices[0]?.delta?.content || '');
-      response.write(chunk.choices[0]?.delta?.content || '');
+      for await (let chunk of data) {
+        console.log(chunk.choices[0]?.delta?.content || '');
+        response.write(chunk.choices[0]?.delta?.content || '');
+      }
+      response.end();
+    } else {
+      return data;
     }
-
-    response.end();
   }
 }
