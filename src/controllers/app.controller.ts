@@ -20,13 +20,10 @@ export class AppController {
 
   @Get('/message')
   async sendMessage(@Body() message: string, @Res() response: Response) {
-    const data = await this.omniService.sendMessage(
-      {
-        role: 'user',
-        content: 'Say Hello Alesha',
-      },
-      { stream: true },
-    );
+    const data = await this.omniService.sendMessageStream({
+      role: 'user',
+      content: 'Say Hello Alesha',
+    });
 
     if (!data) throw new Error('LOH NO RESPONSE');
 
