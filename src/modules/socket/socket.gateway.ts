@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -20,9 +21,7 @@ export class SocketGateway
 
   @WebSocketServer() io: Server;
 
-  afterInit(server: any) {
-    console.log('SOCKET GATEWAY INIT');
-  }
+  afterInit(server: any) {}
 
   async handleConnection(client: Socket, ...args: any[]) {
     console.log(`Connected socket: ${client}`);
