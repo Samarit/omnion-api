@@ -3,14 +3,14 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { AuthService } from 'src/services/auth/auth.service';
 
 @Controller('auth')
-@UseGuards(AuthGuard)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Get('login')
-  async login() {
-    const result = await this.authService.signIn();
+  async login(@Req() req: any) {
+    const { login, password } = req.headers;
 
+    const result = await this.authService.signIn(login, password);
     return result;
   }
 }

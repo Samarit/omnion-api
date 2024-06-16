@@ -1,12 +1,22 @@
 import { OpenAI } from 'openai';
-import { Body, Controller, Get, Logger, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 // import OpenAI from 'openai';
 import { AppService } from 'src/services/app.service';
 import OmniStreamService from 'src/services/omni-stream/omni-stream.service';
 import { Response } from 'express';
 import { Stream } from 'openai/streaming';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
 @Controller()
+@UseGuards(AuthGuard)
 export class AppController {
   constructor(
     private readonly appService: AppService,
