@@ -1,4 +1,5 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { AuthService } from 'src/services/auth/auth.service';
 
@@ -7,10 +8,16 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Get('login')
-  async login(@Req() req: any) {
+  async login(@Req() req: any, @Res({ passthrough: true }) res: Response) {
     const { login, password } = req.headers;
 
     const result = await this.authService.signIn(login, password);
-    return result;
+
+    if (result && result.token) {
+      console.log({ result });
+      res.cookie('token', result.token, { httpOnly: true, secure: false });
+
+      return result;
+    }
   }
 }

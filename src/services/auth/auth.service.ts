@@ -14,6 +14,8 @@ export class AuthService {
   ) {}
   async signIn(login: string, password: string) {
     const user = await this.userService.findOne(login);
+    console.log('USER: ', user);
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -23,6 +25,7 @@ export class AuthService {
 
     try {
       const token = await this.jwtService.signAsync(user);
+
       return {
         status: 200,
         message: 'success',
