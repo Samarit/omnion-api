@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { AuthService } from 'src/services/auth/auth.service';
@@ -7,9 +7,15 @@ import { AuthService } from 'src/services/auth/auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('login')
+  @Post('login')
   async login(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    const { login, password } = req.headers;
+    const { login, password } = req.body;
+
+    console.log(req.body);
+    console.log({ login, password });
+
+    if (!login || !password)
+      return { error: 'Login and password are required' };
 
     const result = await this.authService.signIn(login, password);
 

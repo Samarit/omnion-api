@@ -17,7 +17,7 @@ export class AuthService {
     console.log('USER: ', user);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UnauthorizedException('User not found');
     }
     if (user.password !== password) {
       throw new UnauthorizedException('Wrong password');
