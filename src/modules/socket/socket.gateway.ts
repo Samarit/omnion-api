@@ -69,4 +69,5 @@ const emitAsStream = async (
     const msg = chunk.choices[0]?.delta?.content;
     socket.emit('response:chunk', chunk.choices[0]?.delta?.content || '');
   }
+  socket.emit('response:end');
 };
