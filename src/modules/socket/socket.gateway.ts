@@ -29,10 +29,14 @@ export class SocketGateway
 
     const data = await this.omniService.sendMessageStream({
       role: 'user',
-      content: 'Say Hello Alesha',
+      content: 'Say Hello Samarit',
     });
 
-    if (!data) throw new Error('LOH NO RESPONSE');
+    if (!data) {
+      console.error('No response from Omni');
+      client.emit('message', 'No response from Omni');
+      return;
+    }
 
     await emitAsStream(client, data);
   }
@@ -51,7 +55,11 @@ export class SocketGateway
       content: payload,
     });
 
-    if (!data) throw new Error('LOH NO RESPONSE');
+    if (!data) {
+      console.error('No response from Omni');
+      client.emit('message', 'No response from Omni');
+      return;
+    }
 
     emitAsStream(client, data);
 
