@@ -6,9 +6,25 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { SocketGateway } from './modules/socket/socket.gateway';
 import { UserModule } from './modules/user/user.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './modules/user/user.entity';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, UserModule],
+  imports: [
+    ConfigModule.forRoot(),
+    AuthModule,
+    UserModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'pgpass',
+      database: 'pgdb',
+      entities: [UserEntity],
+      synchronize: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService, OmniStreamService, SocketGateway, Logger],
 })
