@@ -13,7 +13,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async signIn(login: string, password: string) {
-    const user = await this.userService.findOne(login);
+    const userDB = await this.userService.findOne(login);
+    if (!userDB) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+    const user = {
+      login: userDB.login,
+      password: userDB.password,
+    };
     console.log('USER: ', user);
 
     if (!user) {
