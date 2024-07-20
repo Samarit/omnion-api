@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ERole, IUser } from 'src/interfaces/user.interface';
-import { UserEntity } from 'src/modules/user/user.entity';
+import { User } from 'src/modules/user/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
-  ) {}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
   private readonly mockUserAdmin: IUser = {
     login: 'admin',
@@ -25,7 +23,11 @@ export class UserService {
     },
   ];
 
-  async findOne(login: string): Promise<UserEntity | null> {
+  async findOne(login: string): Promise<User | null> {
     return this.userRepo.findOne({ where: { login } });
+  }
+
+  async create(user: IUser): Promise<User> {
+    return this.userRepo.save(user);
   }
 }
