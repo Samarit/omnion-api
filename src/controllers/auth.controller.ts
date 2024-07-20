@@ -8,12 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ERole, IUser } from 'src/interfaces/user.interface';
+import { createUserDto, loginUserDto } from 'src/modules/user/user.dto';
 import { AuthService } from 'src/services/auth/auth.service';
-
-interface LoginDTO {
-  login: string;
-  password: string;
-}
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +19,7 @@ export class AuthController {
   @Post('login')
   async login(
     @Req() req: any,
-    @Body() body: LoginDTO,
+    @Body() body: loginUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const { login, password } = body;
@@ -30,11 +27,29 @@ export class AuthController {
     if (!login || !password)
       return { error: 'Login and password are required' };
 
-    const result = await this.authService.signIn(login, password);
+    const user: IUser = {
+      login,
+      password,
+      role: ERole.USER,
+    };
+
+    const result = await this.authService.signIn(user);
 
     if (result && result.token) {
       res.cookie('token', result.token, { httpOnly: true, secure: false });
       return result;
     }
+  }
+
+  @Post('register')
+  async register(@Body() body: createUserDto) {
+    const { login, password } = body;
+
+    const user: IUser = {
+      login,
+      password,
+      role: ERole.USER,
+    };
+    return await this.authService.register(user);
   }
 }

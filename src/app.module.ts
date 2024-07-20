@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SocketGateway } from './modules/socket/socket.gateway';
 import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './modules/user/user.entity';
+import { User } from './modules/user/user.entity';
 
 @Module({
   imports: [
@@ -21,8 +21,7 @@ import { UserEntity } from './modules/user/user.entity';
       username: 'postgres',
       password: 'pgpass',
       database: 'pgdb',
-      entities: [UserEntity],
-      synchronize: true,
+      entities: [User],
     }),
   ],
   controllers: [AppController],
