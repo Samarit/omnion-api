@@ -33,12 +33,14 @@ export class AuthController {
       role: ERole.USER,
     };
 
+    console.log({ user });
+
     const result = await this.authService.signIn(user);
 
     if (result && result.token) {
       res.cookie('token', result.token, { httpOnly: true, secure: false });
-      return result;
     }
+    return result;
   }
 
   @Post('register')

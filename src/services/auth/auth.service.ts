@@ -15,15 +15,18 @@ export class AuthService {
   ) {}
   async signIn(user: IUser) {
     const userDB = await this.userService.findOne(user.login);
-    if (!userDB) {
+    console.log({ userDB });
+    if (!userDB)
       return {
         status: 404,
         message: 'User not found',
       };
-    }
 
     if (user.password !== userDB.password) {
-      throw new UnauthorizedException('Wrong password');
+      return {
+        status: 401,
+        message: 'Wrong password',
+      };
     }
 
     try {
