@@ -17,16 +17,16 @@ export class AuthService {
     const userDB = await this.userService.findOne(user.login);
     console.log({ userDB });
     if (!userDB)
-      return {
+      throw new NotFoundException({
         status: 404,
         message: 'User not found',
-      };
+      });
 
     if (user.password !== userDB.password) {
-      return {
+      throw new UnauthorizedException({
         status: 401,
         message: 'Wrong password',
-      };
+      });
     }
 
     try {

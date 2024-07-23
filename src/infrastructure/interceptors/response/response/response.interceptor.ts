@@ -29,16 +29,24 @@ export class ResponseInterceptor implements NestInterceptor {
       success,
       status: response.statusCode,
       data,
+      message: null,
     };
   }
 
-  errorHandler(error: any, ctx: ExecutionContext) {
+  errorHandler(error: HttpException, ctx: ExecutionContext) {
     const context = ctx.switchToHttp();
     const response = context.getResponse();
-    return {
+
+    console.error(`Interceptor catch error: ${error.message}`, {
+      url: context.getRequest().url,
+      error: error,
+    });
+
+    response.status(error.getStatus()).json({
       success: false,
-      status: response.statusCode,
-      error,
-    };
+      status: error.getStatus(),
+      data: null,
+      message: error.message,
+    });
   }
 }
