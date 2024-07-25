@@ -13,7 +13,7 @@ import { AppService } from 'src/services/app.service';
 import OmniStreamService from 'src/services/omni-stream/omni-stream.service';
 import { Response } from 'express';
 import { Stream } from 'openai/streaming';
-import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { AuthGuard } from 'src/infrastructure/guards/auth/auth.guard';
 
 @Controller()
 @UseGuards(AuthGuard)
