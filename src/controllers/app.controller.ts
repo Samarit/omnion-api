@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   Logger,
   Post,
   Res,
@@ -37,7 +38,7 @@ export class AppController {
       content: 'Say Hello Alesha',
     });
 
-    if (!data) throw new Error('LOH NO RESPONSE');
+    if (!data) throw new HttpException('OpenAI connection error', 500);
 
     if (data instanceof Stream) {
       response.writeHead(200, {
@@ -50,8 +51,6 @@ export class AppController {
         response.write(chunk.choices[0]?.delta?.content || '');
       }
       response.end();
-    } else {
-      return data;
     }
   }
 }
