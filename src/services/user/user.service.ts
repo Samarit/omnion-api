@@ -18,7 +18,7 @@ export class UserService {
       await this.userRepo.insert(user);
       console.log('Created user: ', user);
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw error;
     }
   }
 }

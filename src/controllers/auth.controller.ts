@@ -40,7 +40,7 @@ export class AuthController {
     if (token) {
       res.cookie('token', token, { httpOnly: true, secure: false });
     }
-    return token;
+    return { token };
   }
 
   @Post('register')

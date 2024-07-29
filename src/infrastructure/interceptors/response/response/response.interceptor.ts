@@ -51,18 +51,18 @@ export class ResponseInterceptor implements NestInterceptor {
     let message = 'Internal server error';
     let status = 500;
 
-    console.error(`Interceptor catch error: ${error.message}`, {
+    console.error(`Interceptor catch error: ${errorType} ${error.message}`, {
       url: context.getRequest().url,
       error: error,
     });
 
-    switch (errorType) {
-      case 'HttpException':
+    switch (true) {
+      case error instanceof HttpException:
         status = error.getStatus();
         message = error.message;
         break;
 
-      case 'QueryFailedError':
+      case error instanceof QueryFailedError:
         const mappedError = getTypeORMMappedError(error);
         status = mappedError.status;
         message = mappedError.message;
