@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ERole, IUser } from 'src/interfaces/user.interface';
 import { User } from 'src/modules/user/user.entity';
@@ -8,26 +9,16 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-  private readonly mockUserAdmin: IUser = {
-    login: 'admin',
-    password: 'admin',
-    role: ERole.ADMIN,
-  };
-
-  private readonly mockUsers: IUser[] = [
-    this.mockUserAdmin,
-    {
-      login: 'user',
-      password: 'user',
-      role: ERole.USER,
-    },
-  ];
-
   async findOne(login: string): Promise<User | null> {
     return this.userRepo.findOne({ where: { login } });
   }
 
-  async create(user: IUser): Promise<User> {
-    return this.userRepo.save(user);
+  async create(user: IUser): Promise<void> {
+    try {
+      await this.userRepo.insert(user);
+      console.log('Created user: ', user);
+    } catch (error) {
+      throw error;
+    }
   }
 }

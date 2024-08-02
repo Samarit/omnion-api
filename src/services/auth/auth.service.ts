@@ -1,11 +1,13 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { ERole, IUser } from 'src/interfaces/user.interface';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class AuthService {
@@ -32,32 +34,15 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(user);
 
-      return {
-        status: 200,
-        message: 'success',
-        token,
-      };
+      return token;
     } catch (error) {
-      console.log({ error });
+      throw new InternalServerErrorException(error.message);
     }
   }
 
   async register(user: IUser) {
-    console.log({ user });
-    try {
-      const userDB = await this.userService.create(user);
-      const token = await this.jwtService.signAsync(user);
-      return {
-        status: 200,
-        message: 'success',
-        token,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        status: 500,
-        message: 'Registration error',
-      };
-    }
+    await this.userService.create(user);
+    const token = await this.jwtService.signAsync(user);
+    return token;
   }
 }

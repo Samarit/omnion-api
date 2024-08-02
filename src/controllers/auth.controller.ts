@@ -35,12 +35,12 @@ export class AuthController {
 
     console.log({ user });
 
-    const result = await this.authService.signIn(user);
+    const token = await this.authService.signIn(user);
 
-    if (result && result.token) {
-      res.cookie('token', result.token, { httpOnly: true, secure: false });
+    if (token) {
+      res.cookie('token', token, { httpOnly: true, secure: false });
     }
-    return result;
+    return { token };
   }
 
   @Post('register')
