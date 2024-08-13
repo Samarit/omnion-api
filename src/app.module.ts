@@ -7,14 +7,18 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SocketGateway } from './modules/socket/socket.gateway';
 import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './modules/user/user.entity';
+import { UserEntity } from './modules/user/user.entity';
 import { ChatModule } from './modules/chat/chat.module';
+import { ChatController } from './controllers/chat.controller';
+import { MessageEntity } from './modules/chat/message.entity';
+import { ChatEntity } from './modules/chat/chat.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
     UserModule,
+    ChatModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -22,11 +26,10 @@ import { ChatModule } from './modules/chat/chat.module';
       username: 'postgres',
       password: 'pgpass',
       database: 'pgdb',
-      entities: [User],
+      entities: [UserEntity, ChatEntity, MessageEntity],
     }),
-    ChatModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ChatController],
   providers: [AppService, OmniStreamService, SocketGateway, Logger],
 })
 export class AppModule {

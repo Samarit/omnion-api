@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { ERole, IUser } from 'src/interfaces/user.interface';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { UserEntity } from 'src/modules/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +41,7 @@ export class AuthService {
     }
   }
 
-  async register(user: IUser) {
+  async register(user: UserEntity) {
     await this.userService.create(user);
     const token = await this.jwtService.signAsync(user);
     return token;
