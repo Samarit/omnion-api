@@ -1,10 +1,14 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
+import { ERole, IUser } from 'src/interfaces/user.interface';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { UserEntity } from 'src/modules/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -12,27 +16,34 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
-  async signIn(login: string, password: string) {
-    const user = await this.userService.findOne(login);
-    console.log('USER: ', user);
+  async signIn(user: IUser) {
+    const userDB = await this.userService.findOne(user.login);
+    console.log({ userDB });
+    if (!userDB)
+      throw new NotFoundException({
+        status: 404,
+        message: 'User not found',
+      });
 
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-    if (user.password !== password) {
-      throw new UnauthorizedException('Wrong password');
+    if (user.password !== userDB.password) {
+      throw new UnauthorizedException({
+        status: 401,
+        message: 'Wrong password',
+      });
     }
 
     try {
       const token = await this.jwtService.signAsync(user);
 
-      return {
-        status: 200,
-        message: 'success',
-        token,
-      };
+      return token;
     } catch (error) {
-      console.log({ error });
+      throw new InternalServerErrorException(error.message);
     }
+  }
+
+  async register(user: UserEntity) {
+    await this.userService.create(user);
+    const token = await this.jwtService.signAsync(user);
+    return token;
   }
 }
