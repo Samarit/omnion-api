@@ -8,6 +8,7 @@ import { SocketGateway } from './modules/socket/socket.gateway';
 import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './modules/user/user.entity';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { User } from './modules/user/user.entity';
       database: 'pgdb',
       entities: [User],
     }),
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, OmniStreamService, SocketGateway, Logger],
