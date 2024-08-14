@@ -1,9 +1,14 @@
+import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('message')
+@Entity('messages')
 export class MessageEntity {
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
+
+  @Column({ type: 'int', nullable: false })
+  user_id: number;
 
   @Column({ type: 'int', nullable: false })
   chat_id: number;

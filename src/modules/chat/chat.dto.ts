@@ -2,5 +2,15 @@ import { IsNumber } from 'class-validator';
 
 export class createChatDto {
   @IsNumber()
-  user_id: number;
+  userID: number;
+}
+
+export class saveMessageDto {
+  @IsNumber()
+  userID: number;
+
+  @IsNumber()
+  chatID: number;
+
+  message: string;
 }

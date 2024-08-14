@@ -22,7 +22,6 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => this.responseHandler(data, context)),
       catchError((error: HttpException) => {
-        // console.log(`CATCH ${error.constructor.name}: ${error}`);
         return throwError(() => this.errorHandler(error, context));
       }),
     );
