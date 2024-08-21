@@ -10,6 +10,7 @@ import {
 import { Response } from 'express';
 import { ERole, IUser } from 'src/interfaces/user.interface';
 import { createUserDto, loginUserDto } from 'src/modules/user/user.dto';
+import { UserEntity } from 'src/modules/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 
 @Controller('auth')
@@ -47,11 +48,11 @@ export class AuthController {
   async register(@Body() body: createUserDto) {
     const { login, password } = body;
 
-    const user: IUser = {
-      login,
-      password,
-      role: ERole.USER,
-    };
+    const user = new UserEntity();
+    user.login = login;
+    user.password = password;
+    user.role = ERole.USER;
+
     return await this.authService.register(user);
   }
 }
